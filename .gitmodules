@@ -1,6 +1,4 @@
 [submodule "library"]
 	path = library
-    url = https://github.com/mr-superonion/meadlib
+	url = https://github.com/mr-superonion/meadlib.git
 	branch = master
-    ; forked library from Alexander Mead
-
