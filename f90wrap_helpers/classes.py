@@ -1,9 +1,9 @@
 import numpy as np
 
-from pyhmcode.hmx import HMcode2015 as HMcode2015
-from pyhmcode.hmx import HMcode2016 as HMcode2016
-from pyhmcode.hmx import HMcode2020 as HMcode2020
-from pyhmcode.hmx import HMcode2020_feedback as HMcode2020_feedback
+from pyhmcode.hmx import HMcode2015_CAMB as HMcode2015
+from pyhmcode.hmx import HMcode2016_CAMB as HMcode2016
+from pyhmcode.hmx import HMcode2020_CAMB as HMcode2020
+from pyhmcode.hmx import HMcode2020_feedback_CAMB as HMcode2020_feedback
 
 from pyhmcode.hmx import HMx2020_matter_pressure_w_temp_scaling as HMx2020_matter_pressure_w_temp_scaling
 from pyhmcode.hmx import HMx2020_matter_w_temp_scaling as HMx2020_matter_w_temp_scaling
@@ -64,7 +64,7 @@ class Halomodel(pyhmcode.hmx.halomod):
     @property
     def As(self):
         return _pyhmcode.f90wrap_halomod__get__as(self._handle)
-    
+
     @As.setter
     def As(self, As):
         _pyhmcode.f90wrap_halomod__set__as(self._handle, As)
@@ -75,7 +75,7 @@ class Halomodel(pyhmcode.hmx.halomod):
 def calculate_nonlinear_power_spectrum(cosmology, halomodel, fields=None,
                                        return_halo_terms=False, verbose=False):
     """Compute power spectra using HMCode or HMx.
-    
+
     Arguments
     ---------
     cosmology: pyhmcode.Cosmology
@@ -88,7 +88,7 @@ def calculate_nonlinear_power_spectrum(cosmology, halomodel, fields=None,
         Return the one- and two-halo terms as well. Default False.
     verbose : bool, optional
         Verbosity of output.
-        
+
     Returns
     -------
     pofk_hmc : numpy.array
@@ -120,11 +120,11 @@ def calculate_nonlinear_power_spectrum(cosmology, halomodel, fields=None,
     pow_1h = np.zeros((nf, nf, nk, na), dtype=np.float64, order="F")
     pow_hm = np.zeros((nf, nf, nk, na), dtype=np.float64, order="F")
 
-    pyhmcode.hmx.calculate_hmx_old(ifield=fields, nf=nf, 
-                                   k=cosmology.k_lin, nk=nk, 
-                                   a=cosmology.a_lin, na=na, 
-                                   pow_li=pow_lin, 
-                                   pow_2h=pow_2h, pow_1h=pow_1h, pow_hm=pow_hm, 
+    pyhmcode.hmx.calculate_hmx_old(ifield=fields, nf=nf,
+                                   k=cosmology.k_lin, nk=nk,
+                                   a=cosmology.a_lin, na=na,
+                                   pow_li=pow_lin,
+                                   pow_2h=pow_2h, pow_1h=pow_1h, pow_hm=pow_hm,
                                    hmod=halomodel, cosm=cosmology, verbose=verbose)
 
     pofk_hmc = np.swapaxes(pow_hm[...,::-1], 2, 3) / (cosmology.k_lin**3/(2*np.pi**2))
